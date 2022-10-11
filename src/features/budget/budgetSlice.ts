@@ -1,15 +1,29 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
-import { fetchCount } from './counterAPI';
+import { fetchCount } from './budgetAPI';
+import { parse } from './BudgetParser';
 
-export interface CounterState {
+export interface Transaction {
+  date: string,
+  amount: number,
+  type: 'debit' | 'credit',
+  document: string,
+  contragent: string,
+  reason: string,
+  info: string,
+  category: string
+}
+
+export interface BudgetState {
   value: number;
+  transactions?: Transaction[];
   status: 'idle' | 'loading' | 'failed';
 }
 
-const initialState: CounterState = {
+const initialState: BudgetState = {
   value: 0,
   status: 'idle',
+  transactions: undefined
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -31,6 +45,9 @@ export const counterSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    processFile: (state, action: PayloadAction<string>) => {
+      state.transactions = parse(action.payload)
+    },
     increment: (state) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
@@ -60,12 +77,20 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { processFile, increment, decrement, incrementByAmount } = counterSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectCount = (state: RootState) => state.counter.value;
+export const selectCount = (state: RootState) => state.budget.value;
+
+export const selectTransactions = (state: RootState) => state.budget.transactions
+
+export const selectSpend = (state: RootState) => state.budget.transactions?.reduce((prev, curr) =>
+  prev + (curr.type === 'debit' ? curr.amount : 0), 0)
+
+export const selectReceived = (state: RootState) => state.budget.transactions?.reduce((prev, curr) =>
+  prev + (curr.type === 'credit' ? curr.amount : 0), 0)
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.

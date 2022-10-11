@@ -15,11 +15,11 @@
 
 .App-header {
   min-height: 100vh;
-  display: flex;
+   /* display: flex; */
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 12px;
 }
 
 .App-link {
@@ -36,4 +36,48 @@
   100% {
     transform: translateY(0px);
   }
+}
+
+h2 {
+  color: #003781;
+}
+
+.button {
+  background: #003781 repeat-x scroll 0 0;
+  color: #eee;
+  border: 1px solid #003781;
+  cursor: pointer;
+  font-size: 13px;
+  height: 24px;
+  padding: 0 10px;
+  width: 150px;
+} 
+
+.field-quarter {
+  float: left;
+}
+
+.field-quarter-right {
+  float: left;
+  margin-left: 10px;
+}
+
+button {
+  background: #003781 repeat-x scroll 0 0;
+  border: 1px solid #003781;
+  cursor: pointer;
+  font-size: 13px;
+  height: 24px;
+  color: #eee;
+  padding: 0 10px;
+  width: 150px;
+} 
+
+button:hover,
+button:focus {
+  border: 2px solid #0e5dc4;
+}
+
+button:active {
+  background-color: #0e5dc4;
 }
